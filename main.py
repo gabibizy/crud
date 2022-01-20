@@ -19,11 +19,6 @@ def users():
 		return render_template('users.html', lista_usuarios=lista_usuarios)
 	except Exception as e:
 		print(e)
-
-
-@app.route('/new_user')
-def add_user_view():
-	return render_template('add.html')
 		
 
 @app.route('/add', methods=['POST'])
@@ -34,7 +29,6 @@ def add_user():
 		db.session.add(usuario)
 		db.session.commit()
 
-		flash('User added successfully!')
 		return redirect('/')
 		
 	except Exception as e:
@@ -45,13 +39,14 @@ def add_user():
 def select_by_id(id):
 	try:
 		usuario = Usuario.query.filter_by(id=id).first()
+		print("usuario selecionado:", usuario.id)
 		return render_template('edit.html', usuario=usuario)
 	except Exception as e:
 		print(e)
 
 
-@app.route('/update/<int:id>', methods=['POST'])
-def update_user(id):
+@app.route('/update/<int:id>', methods=["POST"])
+def update(id):
 	usuario = Usuario.query.filter_by(id=id).first() 
 
 	usuario.nome = request.form.get("nome")
@@ -60,18 +55,16 @@ def update_user(id):
 	db.session.add(usuario)
 	db.session.commit()
 
-	flash('User updated successfully!')
 	return redirect('/')
 
 		
 @app.route('/delete/<int:id>')
-def delete_user(id):
+def delete(id):
 
 	usuario = Usuario.query.filter_by(id=id).first()
 	try:
 		db.session.delete(usuario)
 		db.session.commit()
-		flash('User deleted successfully!')
 		return redirect('/')
 
 	except Exception as e:
